@@ -1,30 +1,30 @@
 /**
  * @author Martijn Dierckx
- * @todo Check after first getZones from all controllers wether there are any stale 'accessories' registered from cache which aren't linked to a zone
+ * @todo Check after first getZones from all controllers whether there are any stale 'accessories' registered from cache which aren't linked to a zone
  */
 
-import { APIEvent } from "homebridge";
+import { APIEvent } from 'homebridge';
 import type {
   API,
   DynamicPlatformPlugin,
   Logger,
   PlatformAccessory,
-  PlatformConfig,
-} from "homebridge";
+  PlatformConfig
+} from 'homebridge';
 import {
   PLATFORM_NAME,
   PLUGIN_NAME,
   DEFAULT_POLLING_INTERVAL_CLOUD,
-  DEFAULT_POLLING_INTERVAL_LOCAL,
-} from "./settings";
+  DEFAULT_POLLING_INTERVAL_LOCAL
+} from './settings';
 import {
   Hydrawise,
   HydrawiseConnectionType,
   HydrawiseZone,
-  HydrawiseController,
-} from "hydrawise-api";
-import { HydrawiseSprinkler } from "./HydrawiseSprinkler";
-import { setInterval } from "timers";
+  HydrawiseController
+} from 'hydrawise-api';
+import { HydrawiseSprinkler } from './HydrawiseSprinkler';
+import { setInterval } from 'timers';
 
 export class HydrawisePlatform implements DynamicPlatformPlugin {
   public readonly log: Logger;
@@ -42,13 +42,13 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
     // Setup Hydrawise connection
     this.hydrawise = new Hydrawise({
       type:
-        config.type == "LOCAL"
+        config.type == 'LOCAL'
           ? HydrawiseConnectionType.LOCAL
           : HydrawiseConnectionType.CLOUD,
       host: config.host,
       user: config.user,
       password: config.password,
-      key: config.api_key,
+      key: config.api_key
     });
 
     // On: Finished loading Homebridge Plugin
@@ -63,7 +63,7 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
             // Set polling interval
             if (
               config.polling_interval !== undefined &&
-              typeof config.polling_interval == "number"
+              typeof config.polling_interval == 'number'
             ) {
               that.pollingInterval = config.polling_interval;
             } else {
@@ -79,7 +79,7 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
             // For each Controller
             controllers.map((controller: HydrawiseController) => {
               that.log.debug(
-                "Retrieved a Hydrawise controller: " + controller.name
+                'Retrieved a Hydrawise controller: ' + controller.name
               );
 
               // Initiate the first poll
@@ -91,7 +91,7 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
               }, that.pollingInterval);
             });
           } else {
-            that.log.error("Did not get any controllers");
+            that.log.error('Did not get any controllers');
           }
         })
         .catch((error: any) => that.log.error(error));
@@ -124,7 +124,7 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
           if (existingSprinkler !== undefined) {
             // Log
             that.log.debug(
-              "Received zone for existing sprinkler: " + zone.name
+              'Received zone for existing sprinkler: ' + zone.name
             );
 
             // Update zone values & push to homebridge
@@ -139,7 +139,7 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
           else {
             // Log
             that.log.debug(
-              "Received zone for new/cached sprinkler: " + zone.name
+              'Received zone for new/cached sprinkler: ' + zone.name
             );
 
             // Create new sprinkler
@@ -152,7 +152,7 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
         toCheckSprinklers.map((sprinkler) => {
           // Log
           that.log.info(
-            "Removing Sprinkler for deleted Hydrawise zone: %s",
+            'Removing Sprinkler for deleted Hydrawise zone: %s',
             sprinkler.zone.name
           );
 
@@ -171,7 +171,7 @@ export class HydrawisePlatform implements DynamicPlatformPlugin {
    */
   configureAccessory(accessory: PlatformAccessory): void {
     this.log.info(
-      "Configuring Sprinkler from cache: %s",
+      'Configuring Sprinkler from cache: %s',
       accessory.displayName
     );
 
