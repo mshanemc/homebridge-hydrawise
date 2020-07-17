@@ -149,7 +149,7 @@ export class HydrawiseSprinkler {
         (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
           that.platform.log.debug(`duration requested: ${value}`);
           that.zone
-            .run(value as number)
+            .run((value as number) / 60)
             .then((data) => {
               that.platform.log.info(
                 'Set Duration for ' + zone.name + ' to ' + value
