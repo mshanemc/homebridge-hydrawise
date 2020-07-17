@@ -104,6 +104,30 @@ export class HydrawiseSprinkler {
       that.platform.log.info('%s identified!', that.accessory.displayName);
     });
 
+    // On: Set duration (Since there is no way to push the default run time to Hydrawise, this remains unimplemented)
+    service
+      .getCharacteristic(that.platform.api.hap.Characteristic.SetDuration)
+      .on(
+        CharacteristicEventTypes.SET,
+        (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
+          that.platform.log.debug(`duration requested: ${value}`);
+          const inMinutes = (value as number) / 60;
+          that.zone
+            .run(inMinutes)
+            .then((data) => {
+              that.platform.log.debug(data);
+              that.platform.log.info(
+                `Set Duration for ${zone.name} to ${inMinutes} minutes`
+              );
+              callback();
+            })
+            .catch((error) => {
+              that.platform.log.error(error);
+              callback();
+            });
+        }
+      );
+
     // On: Active state change
     service
       .getCharacteristic(that.platform.api.hap.Characteristic.Active)
@@ -138,30 +162,6 @@ export class HydrawiseSprinkler {
                 callback();
               });
           }
-        }
-      );
-
-    // On: Set duration (Since there is no way to push the default run time to Hydrawise, this remains unimplemented)
-    service
-      .getCharacteristic(that.platform.api.hap.Characteristic.SetDuration)
-      .on(
-        CharacteristicEventTypes.SET,
-        (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
-          that.platform.log.debug(`duration requested: ${value}`);
-          const inMinutes = (value as number) / 60;
-          that.zone
-            .run(inMinutes)
-            .then((data) => {
-              that.platform.log.debug(data);
-              that.platform.log.info(
-                `Set Duration for ${zone.name} to ${inMinutes} minutes`
-              );
-              callback();
-            })
-            .catch((error) => {
-              that.platform.log.error(error);
-              callback();
-            });
         }
       );
   }
