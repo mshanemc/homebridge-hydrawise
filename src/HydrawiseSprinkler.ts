@@ -152,6 +152,7 @@ export class HydrawiseSprinkler {
           that.zone
             .run(inMinutes)
             .then((data) => {
+              that.platform.log.debug(data);
               that.platform.log.info(
                 'Set Duration for ' + zone.name + ' to ' + inMinutes
               );
