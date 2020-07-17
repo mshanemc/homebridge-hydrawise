@@ -136,16 +136,17 @@ export class HydrawiseSprinkler {
         (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
           // Run zone
           if (value == 1) {
-            that.zone
-              .run()
-              .then((data) => {
-                that.platform.log.info(that.zone.name + ' sprinkler turned on');
-                callback();
-              })
-              .catch((error) => {
-                that.platform.log.error(error);
-                callback();
-              });
+            callback();
+            // that.zone
+            //   .run()
+            //   .then((data) => {
+            //     that.platform.log.info(that.zone.name + ' sprinkler turned on');
+            //     callback();
+            //   })
+            //   .catch((error) => {
+            //     that.platform.log.error(error);
+            //     callback();
+            //   });
           }
           // Stop running zone
           else {
