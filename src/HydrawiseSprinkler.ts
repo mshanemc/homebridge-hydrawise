@@ -31,7 +31,7 @@ export class HydrawiseSprinkler {
         // UUID
         const uuid = platform.api.hap.uuid.generate(zone.relayID.toString());
 
-        // Already excisting accessory from cache?
+        // Already existing accessory from cache?
         let existingAccessory = that.platform.accessories.find(accessory => accessory.UUID === uuid);
         let service: Service;
         if (existingAccessory !== undefined) {
