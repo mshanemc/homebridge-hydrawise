@@ -1,5 +1,5 @@
 export const PLATFORM_NAME = 'HydrawisePlatform';
-export const PLUGIN_NAME = 'homebridge-hydrawise';
+export const PLUGIN_NAME = '@mshanemc/homebridge-hydrawise';
 
 /**
  * This default polling interval is used for local connections if no override is provided in the config
