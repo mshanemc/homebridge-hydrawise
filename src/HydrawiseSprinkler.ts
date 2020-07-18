@@ -119,10 +119,6 @@ export class HydrawiseSprinkler {
                 `Set Duration for ${zone.name} to ${value} seconds`
               );
               callback();
-              service.updateCharacteristic(
-                that.platform.api.hap.Characteristic.SetDuration,
-                0
-              );
             })
             .catch((error) => {
               that.platform.log.error(error);
@@ -138,12 +134,7 @@ export class HydrawiseSprinkler {
         CharacteristicEventTypes.SET,
         (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
           // Run zone
-          if (
-            service.getCharacteristic(
-              that.platform.api.hap.Characteristic.SetDuration
-            ).value ??
-            0 > 0
-          ) {
+          if (false) {
             callback();
           } else if (value == 1) {
             that.zone
