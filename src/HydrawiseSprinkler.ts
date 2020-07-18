@@ -139,7 +139,9 @@ export class HydrawiseSprinkler {
         (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
           // Run zone
           if (
-            service.getCharacteristic(Characteristic.SetDuration).value ??
+            service.getCharacteristic(
+              that.platform.api.hap.Characteristic.SetDuration
+            ).value ??
             0 > 0
           ) {
             callback();
