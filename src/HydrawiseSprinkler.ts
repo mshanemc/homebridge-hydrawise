@@ -8,7 +8,8 @@ import {
   CharacteristicEventTypes,
   CharacteristicValue,
   CharacteristicSetCallback,
-  Service
+  Service,
+  Characteristic
 } from 'homebridge';
 import type {
   API,
@@ -38,8 +39,6 @@ export class HydrawiseSprinkler {
   private accessory: PlatformAccessory;
   public zone: HydrawiseZone;
   public platform: HydrawisePlatform;
-
-  private durationWasSet = false;
   /**
    * Create a new instance of a HydrawiseSprinkler
    * @param {HydrawiseZone} zone - The HydrawiseZone lined to the Homebridge/HAP accessory
@@ -111,7 +110,6 @@ export class HydrawiseSprinkler {
       .on(
         CharacteristicEventTypes.SET,
         (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
-          this.durationWasSet = true;
           that.platform.log.debug(`duration requested: ${value}`);
           that.zone
             .run(value as number)
@@ -120,12 +118,14 @@ export class HydrawiseSprinkler {
               that.platform.log.info(
                 `Set Duration for ${zone.name} to ${value} seconds`
               );
-              this.durationWasSet = false;
               callback();
+              service.updateCharacteristic(
+                that.platform.api.hap.Characteristic.SetDuration,
+                0
+              );
             })
             .catch((error) => {
               that.platform.log.error(error);
-              this.durationWasSet = false;
               callback();
             });
         }
@@ -138,13 +138,16 @@ export class HydrawiseSprinkler {
         CharacteristicEventTypes.SET,
         (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
           // Run zone
-          if (this.durationWasSet) {
-            this.durationWasSet = false;
+          if (
+            service.getCharacteristic(Characteristic.SetDuration).value ??
+            0 > 0
+          ) {
             callback();
           } else if (value == 1) {
             that.zone
               .run()
               .then((data) => {
+                that.platform.log.debug(data);
                 that.platform.log.info(that.zone.name + ' sprinkler turned on');
                 callback();
               })
@@ -158,6 +161,7 @@ export class HydrawiseSprinkler {
             that.zone
               .stop()
               .then((data) => {
+                that.platform.log.debug(data);
                 that.platform.log.info(
                   that.zone.name + ' sprinkler turned off'
                 );
